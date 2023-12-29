@@ -66,20 +66,6 @@
         ]
     },
     {
-        "id": "195647f4f3349435",
-        "type": "telegram sender",
-        "z": "eda95a3716e96397",
-        "name": "",
-        "bot": "2f9fd9e3efec85a4",
-        "haserroroutput": false,
-        "outputs": 1,
-        "x": 770,
-        "y": 380,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "e6eb8131cee870e1",
         "type": "telegram sender",
         "z": "eda95a3716e96397",
@@ -87,10 +73,12 @@
         "bot": "2f9fd9e3efec85a4",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 770,
-        "y": 600,
+        "x": 490,
+        "y": 520,
         "wires": [
-            []
+            [
+                "b1f2fe419b86069a"
+            ]
         ]
     },
     {
@@ -101,29 +89,10 @@
         "bot": "2f9fd9e3efec85a4",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 1090,
+        "x": 1190,
         "y": 480,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "aa854c62275731c4",
-        "type": "function",
-        "z": "eda95a3716e96397",
-        "name": "function 1",
-        "func": "msg.old = msg.payload\nmsg.payload = {\n    type: \"message\",\n    content: \"What do you want to see?\",\n    chatId : msg.old.chatId,\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 580,
-        "y": 380,
-        "wires": [
-            [
-                "195647f4f3349435"
-            ]
         ]
     },
     {
@@ -131,36 +100,21 @@
         "type": "function",
         "z": "eda95a3716e96397",
         "name": "function 2",
-        "func": "msg.old = msg.payload\nmsg.url = 'https://api.openai.com/v1/images/generations'\n\nmsg.headers = {\n    \"Content-Type\": \"application/json\" ,\n    \"Authorization\": \"Bearer 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\",\n}\nmsg.payload = {\n    \"prompt\": msg.oldpayload.content,\n    \"n\": 1,\n    \"size\": '1024x1024'\n}\nreturn msg;",
-        "outputs": 1,
+        "func": "if (msg.statusCode == 200) {\n    msg.answer = msg.payload.choices[0].message.content\n    msg.payload = {\n        content: msg.answer,\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [msg, null];\n}\nelse {\n    msg.payload = {\n        content: JSON.stringify(msg.payload),\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n\n    return [null, msg]\n}\n\n\n// msg.old = msg.payload\n// msg.url = 'https://api.openai.com/v1/images/generations'\n\n// msg.headers = {\n//     \"Content-Type\": \"application/json\" ,\n//     \"Authorization\": \"Bearer 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\",\n// }\n// msg.payload = {\n//     \"prompt\": msg.oldpayload.content,\n//     \"n\": 1,\n//     \"size\": '1024x1024'\n// }\n// return msg;",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 580,
-        "y": 480,
+        "x": 700,
+        "y": 440,
         "wires": [
             [
-                "43eecef7f1edf772"
-            ]
-        ]
-    },
-    {
-        "id": "0a6e76ea6918aeb6",
-        "type": "function",
-        "z": "eda95a3716e96397",
-        "name": "function 3",
-        "func": "msg.old = msg.payload\nmsg.payload = {\n    type: \"message\",\n    content: \"Error: you can send only text message\",\n    chatId : msg.old.chatId\n\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 580,
-        "y": 600,
-        "wires": [
+                "43eecef7f1edf772",
+                "01ef2d4907bfcc5f"
+            ],
             [
-                "e6eb8131cee870e1"
+                "01d87f4681a67129"
             ]
         ]
     },
@@ -169,22 +123,22 @@
         "type": "function",
         "z": "eda95a3716e96397",
         "name": "function 4",
-        "func": "if(msg.payload.content.includes('/start')){\n    return[msg,null,null]\n}\nif(msg.payload.type === \"message\"){\n    return[null,msg,null]\n}\nelse{\n    return[null,null,msg]\n}\n",
+        "func": "msg.fromApp = msg.payload;\nif (msg.payload.content == '/start') {\n    msg.payload = {\n        content: \"Даний бот відповідатиме як давньогрецький Філософ Сократ, а картини малюватиме у Українському стилі.\",\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [null, msg]\n}\nelse {\n    msg.method = \"POST\"\n    msg.url = 'https://api.openai.com/v1/chat/completions';\n    msg.headers = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer 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`,\n    };\n    msg.payload = {\n        \"model\": \"gpt-3.5-turbo-16k\",\n        \"temperature\": 0.2,\n        \"messages\": [\n\n            {\n                \"role\": \"system\", \"content\": `Ти давньогрецький філософ Сократ, який ділиться своєю мудрістю з наступними поколіннями. Будь ласка формулюй відповіді, так як б їх сформулював Сократ.`\n            },\n            {\n                \"role\": \"user\", \"content\": msg.fromApp.content\n            }\n        ]\n    }\n\n\n\n\n    return [msg, null];\n}\n\n// if(msg.payload.content.includes('/start')){\n//     return[msg,null,null]\n// }\n// if(msg.payload.type === \"message\"){\n//     return[null,msg,null]\n// }\n// else{\n//     return[null,null,msg]\n// }\n",
         "outputs": 3,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 480,
+        "x": 340,
+        "y": 440,
         "wires": [
             [],
             [
-                "aa854c62275731c4",
-                "dcb884dbeadddadc"
+                "bea068aaf8cb40fa",
+                "9c05a9bad76db5de"
             ],
             [
-                "0a6e76ea6918aeb6"
+                "e6eb8131cee870e1"
             ]
         ]
     },
@@ -204,7 +158,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 750,
+        "x": 850,
         "y": 480,
         "wires": [
             [
@@ -217,18 +171,121 @@
         "type": "function",
         "z": "eda95a3716e96397",
         "name": "function 5",
-        "func": "if(msg.statusCode === 200){\n    msg.payload.type = \"message\";\n    msg.payload.content = `<a href=\"${msg.payload.data[0].url}\"></a>`;\n    msg.payload.chatId = `${msg.old.chatId}`;\n    msg.payload.options = {parse_mode : \"HTML\"};\n}\n\nelse{\n  msg.payload.type = \"message\",;\n      msg.payload.content = `${msg.payload.error.message}`;\n    msg.payload.chatId = `${msg.old.chatId}`;\n   \n}\nreturn msg;",
+        "func": "if(msg.statusCode === 200){\n    msg.payload.type = \"message\";\n    msg.payload.content = `<a href=\"${msg.payload.data[0].url}\"></a>`;\n    msg.payload.chatId = `${msg.old.chatId}`;\n    msg.payload.options = {parse_mode : \"HTML\"};\n}\n\nelse{\n  msg.payload.type = \"message\";\n      msg.payload.content = `${msg.payload.error.message}`;\n    msg.payload.chatId = `${msg.old.chatId}`;\n   \n}\nreturn msg;",
         "outputs": 1,
-        "noerr": 1,
+        "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 920,
+        "x": 1020,
         "y": 480,
         "wires": [
             [
                 "ee8f5092bc0d8031"
             ]
         ]
+    },
+    {
+        "id": "bea068aaf8cb40fa",
+        "type": "http request",
+        "z": "eda95a3716e96397",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 440,
+        "wires": [
+            [
+                "dcb884dbeadddadc",
+                "f91fa6814bc0fed6"
+            ]
+        ]
+    },
+    {
+        "id": "9c05a9bad76db5de",
+        "type": "debug",
+        "z": "eda95a3716e96397",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "01d87f4681a67129",
+        "type": "telegram sender",
+        "z": "eda95a3716e96397",
+        "name": "",
+        "bot": "2f9fd9e3efec85a4",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 730,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "01ef2d4907bfcc5f",
+        "type": "telegram sender",
+        "z": "eda95a3716e96397",
+        "name": "",
+        "bot": "2f9fd9e3efec85a4",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 850,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b1f2fe419b86069a",
+        "type": "debug",
+        "z": "eda95a3716e96397",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "f91fa6814bc0fed6",
+        "type": "debug",
+        "z": "eda95a3716e96397",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 340,
+        "wires": []
     }
 ]
