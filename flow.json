@@ -56,27 +56,12 @@
         "bot": "2f9fd9e3efec85a4",
         "saveDataDir": "",
         "filterCommands": false,
-        "x": 150,
-        "y": 460,
+        "x": 90,
+        "y": 440,
         "wires": [
             [
-                "2b3e992a14b019b8",
-                "b883bf6bd29727c5"
+                "2b3e992a14b019b8"
             ],
-            []
-        ]
-    },
-    {
-        "id": "ee8f5092bc0d8031",
-        "type": "telegram sender",
-        "z": "eda95a3716e96397",
-        "name": "",
-        "bot": "2f9fd9e3efec85a4",
-        "haserroroutput": false,
-        "outputs": 1,
-        "x": 1190,
-        "y": 480,
-        "wires": [
             []
         ]
     },
@@ -91,13 +76,12 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 700,
+        "x": 640,
         "y": 440,
         "wires": [
             [
-                "43eecef7f1edf772",
                 "01ef2d4907bfcc5f",
-                "c30b2267e9c44a07"
+                "8f87e13e21b28818"
             ],
             [
                 "01d87f4681a67129"
@@ -109,65 +93,20 @@
         "type": "function",
         "z": "eda95a3716e96397",
         "name": "function 4",
-        "func": "msg.fromApp = msg.payload;\nif (msg.payload.content == '/start') {\n    msg.payload = {\n        content: \"Даний бот відповідатиме як давньогрецький Філософ Сократ, а картини малюватиме у Українському стилі.\",\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n\n    }\n    return [ msg, null]\n}\nelse {\n    msg.method = \"POST\"\n    msg.url = 'https://api.openai.com/v1/chat/completions';\n    msg.headers = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer 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`,\n    };\n    msg.payload = {\n        \"model\": \"gpt-3.5-turbo-16k\",\n        \"temperature\": 0.2,\n        \"messages\": [\n\n            {\n                \"role\": \"system\", \"content\": `Ти давньогрецький філософ Сократ, який ділиться своєю мудрістю з наступними поколіннями. Будь ласка формулюй відповіді, так як б їх сформулював Сократ.`\n            },\n            {\n                \"role\": \"user\", \"content\": msg.fromApp.content\n            }\n        ]\n    }\n\n\n\n\n    return [ null, msg];  \n}\n\n\n// if(msg.payload.content.includes('/start')){\n//     return[msg,null,null]\n// }\n// if(msg.payload.type === \"message\"){\n//     return[null,msg,null]\n// }\n// else{\n//     return[null,null,msg]\n// }\n",
+        "func": "msg.fromApp = msg.payload;\nif (msg.payload.content == '/start') {\n    msg.payload = {\n        content: \"Даний бот відповідатиме як давньогрецький Філософ Сократ, а картини малюватиме у Українському стилі.\",\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n\n    }\n    return [ msg, null]\n}\nelse {\n    msg.method = \"POST\"\n    msg.url = 'https://api.openai.com/v1/chat/completions';\n    msg.headers = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer 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`,\n    };\n    msg.payload = {\n        \"model\": \"gpt-3.5-turbo-16k\",\n        \"temperature\": 0.2,\n        \"messages\": [\n\n            {\n                \"role\": \"system\", \"content\": `Ти давньогрецький філософ Сократ, який ділиться своєю мудрістю з наступними поколіннями. Будь ласка формулюй відповіді, так як б їх сформулював Сократ.`\n            },\n            {\n                \"role\": \"user\", \"content\": msg.fromApp.content\n            }\n        ]\n    }\n\n\n\n\n    return [ null, msg];  \n}\n\n\n// if(msg.payload.content.includes('/start')){\n//     return[msg,null,null]\n// }\n// if(msg.payload.type === \"message\"){\n//     return[null,msg,null]\n// }\n// else{\n//     return[null,null,msg]\n// }\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
+        "x": 280,
         "y": 440,
         "wires": [
             [
-                "e6eb8131cee870e1",
-                "4bb569f3a1367a41"
+                "e6eb8131cee870e1"
             ],
             [
-                "bea068aaf8cb40fa",
-                "9c05a9bad76db5de"
-            ]
-        ]
-    },
-    {
-        "id": "43eecef7f1edf772",
-        "type": "http request",
-        "z": "eda95a3716e96397",
-        "name": "",
-        "method": "POST",
-        "ret": "obj",
-        "paytoqs": "ignore",
-        "url": "",
-        "tls": "",
-        "persist": false,
-        "proxy": "",
-        "insecureHTTPParser": false,
-        "authType": "",
-        "senderr": false,
-        "headers": [],
-        "x": 890,
-        "y": 300,
-        "wires": [
-            [
-                "b15e4bfedf100feb"
-            ]
-        ]
-    },
-    {
-        "id": "b15e4bfedf100feb",
-        "type": "function",
-        "z": "eda95a3716e96397",
-        "name": "function 5",
-        "func": "if(msg.statusCode === 200){\n    msg.payload.type = \"message\";\n    msg.payload.content = `<a href=\"${msg.payload.data[0].url}\"></a>`;\n    msg.payload.chatId = `${msg.old.chatId}`;\n    msg.payload.options = {parse_mode : \"HTML\"};\n}\n\nelse{\n  msg.payload.type = \"message\";\n      msg.payload.content = `${msg.payload.error.message}`;\n    msg.payload.chatId = `${msg.old.chatId}`;\n   \n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1020,
-        "y": 480,
-        "wires": [
-            [
-                "ee8f5092bc0d8031"
+                "bea068aaf8cb40fa"
             ]
         ]
     },
@@ -187,31 +126,13 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 530,
+        "x": 450,
         "y": 440,
         "wires": [
             [
-                "dcb884dbeadddadc",
-                "b57bcf82b65c899c"
+                "dcb884dbeadddadc"
             ]
         ]
-    },
-    {
-        "id": "9c05a9bad76db5de",
-        "type": "debug",
-        "z": "eda95a3716e96397",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 380,
-        "y": 600,
-        "wires": []
     },
     {
         "id": "01d87f4681a67129",
@@ -221,8 +142,8 @@
         "bot": "2f9fd9e3efec85a4",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 750,
-        "y": 700,
+        "x": 670,
+        "y": 520,
         "wires": [
             []
         ]
@@ -235,29 +156,11 @@
         "bot": "2f9fd9e3efec85a4",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 790,
-        "y": 240,
+        "x": 670,
+        "y": 360,
         "wires": [
-            [
-                "38fda5f10da107da"
-            ]
+            []
         ]
-    },
-    {
-        "id": "b883bf6bd29727c5",
-        "type": "debug",
-        "z": "eda95a3716e96397",
-        "name": "debug 4",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 180,
-        "y": 620,
-        "wires": []
     },
     {
         "id": "e6eb8131cee870e1",
@@ -267,92 +170,103 @@
         "bot": "2f9fd9e3efec85a4",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 470,
-        "y": 280,
+        "x": 310,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8f87e13e21b28818",
+        "type": "function",
+        "z": "eda95a3716e96397",
+        "name": "function 5",
+        "func": "// msg.fromApp = msg.payload;\nmsg.method = \"POST\"\nmsg.url = 'https://api.openai.com/v1/images/generations';\nmsg.headers = {\n    'Content-Type': 'application/json',\n    'Authorization': 'Bearer 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',\n};\nmsg.payload = {\n    \"model\": \"dall-e-3\",\n    \"prompt\": `${msg.fromApp.content} в українському стилі`,\n    \"n\": 1,\n    \"size\": \"1024x1024\",\n \n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 440,
         "wires": [
             [
-                "20f49ba1e58b0848"
+                "e7da76b0963acb17"
             ]
         ]
     },
     {
-        "id": "b57bcf82b65c899c",
-        "type": "debug",
+        "id": "e7da76b0963acb17",
+        "type": "http request",
         "z": "eda95a3716e96397",
-        "name": "debug 5",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 620,
-        "y": 340,
-        "wires": []
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 970,
+        "y": 440,
+        "wires": [
+            [
+                "aa77fdc64c568fa4"
+            ]
+        ]
     },
     {
-        "id": "20f49ba1e58b0848",
-        "type": "debug",
+        "id": "aa77fdc64c568fa4",
+        "type": "function",
         "z": "eda95a3716e96397",
-        "name": "debug 6",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 480,
-        "y": 180,
-        "wires": []
+        "name": "function 6",
+        "func": "if (msg.statusCode == 200) {\n   \n    msg.answer = `<a href=\"${msg.payload.data[0].url}\">image </a>`;\n   \n    msg.payload = {\n        content: msg.answer,\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n        options: { parse_mode: \"HTML\" }\n    }\n    return [msg, null];\n}\nelse {\n    msg.payload = {\n        content: JSON.stringify(msg.payload),\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n\n    return [null, msg]\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1120,
+        "y": 440,
+        "wires": [
+            [
+                "14d83b4908d9325a"
+            ],
+            [
+                "84c0e82f57f2fe82"
+            ]
+        ]
     },
     {
-        "id": "c30b2267e9c44a07",
-        "type": "debug",
+        "id": "14d83b4908d9325a",
+        "type": "telegram sender",
         "z": "eda95a3716e96397",
-        "name": "debug 7",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 920,
+        "name": "",
+        "bot": "2f9fd9e3efec85a4",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1170,
         "y": 360,
-        "wires": []
+        "wires": [
+            []
+        ]
     },
     {
-        "id": "38fda5f10da107da",
-        "type": "debug",
+        "id": "84c0e82f57f2fe82",
+        "type": "telegram sender",
         "z": "eda95a3716e96397",
-        "name": "debug 8",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1060,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "4bb569f3a1367a41",
-        "type": "debug",
-        "z": "eda95a3716e96397",
-        "name": "debug 9",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 220,
-        "y": 320,
-        "wires": []
+        "name": "",
+        "bot": "2f9fd9e3efec85a4",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1190,
+        "y": 520,
+        "wires": [
+            []
+        ]
     }
 ]
